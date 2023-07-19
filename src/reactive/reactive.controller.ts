@@ -1,11 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ReactiveService } from './reactive.service';
 import { CreateReactiveDto } from './dto/create-reactive.dto';
 import { UpdateReactiveDto } from './dto/update-reactive.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('reactive')
 export class ReactiveController {
+  excelUploadService: any;
+  fileService: any;
   constructor(private readonly reactiveService: ReactiveService) {}
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadExcelFile(@UploadedFile() file: Express.Multer.File) {
+    const data = await this.fileService.readExcelFile(file.buffer);
+    await this.fileService.saveDataToDatabase(data);
+  }
 
   @Post()
   create(@Body() createReactiveDto: CreateReactiveDto) {
