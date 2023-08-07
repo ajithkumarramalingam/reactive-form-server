@@ -1,26 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Res, Req, HttpStatus } from '@nestjs/common';
 import { ReactiveService } from './reactive.service';
-import { CreateReactiveDto } from './dto/create-reactive.dto';
 import { UpdateReactiveDto } from './dto/update-reactive.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-
+import { Response, Request } from 'express';
 @Controller('reactive')
 export class ReactiveController {
-  excelUploadService: any;
-  fileService: any;
   constructor(private readonly reactiveService: ReactiveService) {}
+  @Post('insert')
+ async insert (@Req() req: Request, @Res() res: Response, @Body() payloads: any) {
+  console.log(payloads, "payload////////////");
+  try {
+    await this.reactiveService.insert(payloads);
+    console.log("Mapped Data:", payloads);
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadExcelFile(@UploadedFile() file: Express.Multer.File) {
-    const data = await this.fileService.readExcelFile(file.buffer);
-    await this.fileService.saveDataToDatabase(data);
+    res.status(HttpStatus.OK).json({
+      message: 'Excel data inserted successfully',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
+      message: 'Something went wrong',
+    });
   }
-
-  @Post()
-  create(@Body() createReactiveDto: CreateReactiveDto) {
-    return this.reactiveService.create(createReactiveDto);
-  }
+}
+// try{
+  //   await this.reactiveService.insert(payloads);
+  //   console.log("payyyyyyyyyyyyyy",payloads);
+  //   res.status(HttpStatus.OK).json({
+  //     message: 'Excel added successfully',
+  //   });
+  // }
+  // catch (error) {
+  //   console.log(error)
+  //   res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
+  //     message: 'Something went wrong',
+  //   });
+  // } 
+  // }
 
   @Get()
   findAll() {

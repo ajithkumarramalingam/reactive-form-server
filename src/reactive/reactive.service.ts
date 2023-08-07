@@ -3,22 +3,19 @@ import { CreateReactiveDto } from './dto/create-reactive.dto';
 import { UpdateReactiveDto } from './dto/update-reactive.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reactive } from './entities/reactive.entity';
-import * as xlsx from 'xlsx';
+import { Repository } from 'typeorm';
 
 
 
 @Injectable()
 export class ReactiveService {
-  readExcelFile(buffer: Buffer): any[] {
-    return [
-      { name: 'John Doe', email: 'john@example.com', phoneNumber: '123-456-7890' },
-    ];
-  }
-
-  async saveDataToDatabase(data: any[]): Promise<void> {
-    const mockDatabase: any[] = [];
-    data.forEach((entry) => mockDatabase.push(entry));
-    return Promise.resolve();
+  constructor(
+    @InjectRepository(Reactive)
+    private reactiveRepository: Repository<Reactive>
+  ){}
+  async insert(payloads) {
+    console.log("inside insert",payloads);
+    return await this.reactiveRepository.save(payloads);
   }
   
   create(createReactiveDto: CreateReactiveDto) {

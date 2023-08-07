@@ -10,7 +10,7 @@ export class Reactive {
     @Column({ nullable: true })
     email: string;
 
-    @Column({length: 10 })
+    @Column({nullable:true })
     phoneNumber: string;
 
     @CreateDateColumn()

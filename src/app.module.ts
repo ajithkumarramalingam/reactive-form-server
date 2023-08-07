@@ -5,6 +5,7 @@ import { ReactiveModule } from './reactive/reactive.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Reactive } from './reactive/entities/reactive.entity';
+import { ExcelController } from './excel/excel.controller';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -21,7 +22,7 @@ TypeOrmModule.forRoot({
     autoLoadEntities:true,  
     entities: [Reactive]
 }),ReactiveModule],
-  controllers: [AppController],
+  controllers: [AppController, ExcelController],
   providers: [AppService],
 })
 export class AppModule {}
